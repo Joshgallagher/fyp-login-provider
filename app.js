@@ -3,6 +3,8 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
+const loginRoutes = require('./routes/login')
+
 const app = express()
 
 app.set('views', path.join(__dirname, 'views'))
@@ -12,18 +14,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-const url = require('url')
-const csrf = require('csurf')
-const csrfProtection = csrf({ cookie: true })
-
-app.get('/', csrfProtection, (req, res) => {
-    let query = url.parse(req.url, true).query
-    let challenge = query.login_challenge;
-
-    res.render('login', {
-        csrfToken: req.csrfToken(),
-        challenge: challenge,
-    })
-})
+app.use('/', loginRoutes);
 
 app.listen(3000, () => console.log('Login Provider is listening!'))
