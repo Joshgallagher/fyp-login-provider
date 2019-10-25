@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
 const loginRoutes = require('./routes/login')
+const consentRoutes = require('./routes/consent')
 
 const app = express()
 
@@ -15,5 +16,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 app.use('/', loginRoutes);
+app.use('/consent', consentRoutes);
 
 app.listen(3000, () => console.log('Login Provider is listening!'))
