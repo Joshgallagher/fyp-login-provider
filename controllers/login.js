@@ -1,6 +1,6 @@
 const url = require('url')
 
-const { info } = require('../system/log')
+const { info, err, notice } = require('../system/log')
 const { getLoginRequest, acceptLoginRequest } = require('../lib/hydra')
 
 const index = (req, res, next) => {
@@ -21,7 +21,7 @@ const index = (req, res, next) => {
                         res.redirect(response.redirect_to)
                     })
                     .catch(error => {
-                        error({
+                        err({
                             message: 'Log in request failed',
                             error
                         })
@@ -38,7 +38,7 @@ const index = (req, res, next) => {
             })
         })
         .catch(error => {
-            error({
+            err({
                 message: 'Log in request failed',
                 error
             })
@@ -52,7 +52,7 @@ const store = (req, res, next) => {
 
     // TODO: Implement custom IDP below
     if (!(req.body.email === 'foo@bar.com' && req.body.password === 'foobar')) {
-        info('Log in authentication failed')
+        notice('Log in authentication failed')
 
         return res.render('login', {
             csrfToken: req.csrfToken(),
@@ -74,7 +74,7 @@ const store = (req, res, next) => {
             res.redirect(response.redirect_to)
         })
         .catch(error => {
-            error({
+            err({
                 message: 'Log in request failed',
                 error
             })

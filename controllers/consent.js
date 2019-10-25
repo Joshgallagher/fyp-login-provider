@@ -1,6 +1,6 @@
 const url = require('url')
 
-const { info } = require('../system/log')
+const { info, err } = require('../system/log')
 const { getConsentRequest, acceptConsentRequest } = require('../lib/hydra')
 
 const index = (req, res, next) => {
@@ -28,7 +28,7 @@ const index = (req, res, next) => {
                     res.redirect(response.redirect_to)
                 })
                 .catch(error => {
-                    error({
+                    err({
                         message: 'Consent request failed',
                         error
                     })
