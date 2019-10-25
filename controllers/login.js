@@ -1,4 +1,5 @@
 const url = require('url')
+
 const { getLoginRequest, acceptLoginRequest } = require('../lib/hydra')
 
 const index = (req, res, next) => {
