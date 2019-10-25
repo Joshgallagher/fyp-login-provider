@@ -1,4 +1,6 @@
 const url = require('url')
+
+const { info } = require('../system/log')
 const { getConsentRequest, acceptConsentRequest } = require('../lib/hydra')
 
 const index = (req, res, next) => {
@@ -7,6 +9,8 @@ const index = (req, res, next) => {
 
     return getConsentRequest(challenge)
         .then(response => {
+            info('Consent request started')
+
             return acceptConsentRequest(challenge, {
                 grant_scope: response.requested_scope,
                 grant_access_token_audience: response.requested_access_token_audience,
@@ -18,8 +22,19 @@ const index = (req, res, next) => {
                 remember: true,
                 remember_for: 3600
             })
-                .then(response => res.redirect(response.redirect_to))
-                .catch(error => next(error))
+                .then(response => {
+                    info('Consent request accepted')
+
+                    res.redirect(response.redirect_to)
+                })
+                .catch(error => {
+                    error({
+                        message: 'Consent request failed',
+                        error
+                    })
+
+                    next(error)
+                })
         })
 }
 
