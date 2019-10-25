@@ -5,27 +5,22 @@ const index = (req, res, next) => {
     let query = url.parse(req.url, true).query
     let challenge = query.login_challenge;
 
-    getLoginRequest(challenge)
+    return getLoginRequest(challenge)
         .then(response => {
-            console.log(response)
             if (response.skip) {
-                acceptLoginRequest(challenge, {
+                return acceptLoginRequest(challenge, {
                     subject: response.subject
-                }).then(response => {
-                    res.redirect(response.redirect_to);
-                }).catch(error => {
-                    next(error)
                 })
+                    .then(response => res.redirect(response.redirect_to))
+                    .catch(error => next(error))
             }
 
-            res.render('login', {
+            return res.render('login', {
                 csrfToken: req.csrfToken(),
                 challenge: challenge,
             })
         })
-        .catch(error => {
-            next(error)
-        })
+        .catch(error => next(error))
 }
 
 const store = (req, res, next) => {
@@ -40,7 +35,7 @@ const store = (req, res, next) => {
         })
     }
 
-    acceptLoginRequest(challenge, {
+    return acceptLoginRequest(challenge, {
         subject: 'foo@bar.com',
         remember: Boolean(req.body.remember),
         remember_for: 3600,
