@@ -3,7 +3,10 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
-const { info } = require('./system/log')
+const PORT = process.env.PORT || 3000
+
+const { warn } = require('./system/log')
+const shutdownProcess = require('./system/shutdownProcess')
 
 const loginRoutes = require('./routes/login')
 const consentRoutes = require('./routes/consent')
@@ -20,4 +23,16 @@ app.use(cookieParser())
 app.use('/', loginRoutes);
 app.use('/consent', consentRoutes);
 
-app.listen(3000, () => info('Application is listening on port 3000'))
+const server = app.listen(PORT)
+
+process.on('SIGINT', () => {
+    warn(`Server is being stopped with signal 'SIGINT'`)
+
+    shutdownProcess(server, process)
+})
+
+process.on('SIGTERM', () => {
+    warn(`Server is being stopped with signal 'SIGTERM'`)
+
+    shutdownProcess(server, process)
+})
