@@ -1,4 +1,7 @@
 const url = require('url')
+const axios = require('axios');
+
+const API_GATEWAY_URL = process.env.API_GATEWAY_URL
 
 const { info, error: err, notice } = require('../system/log')
 const { getLoginRequest, acceptLoginRequest } = require('../lib/hydra')
@@ -50,36 +53,42 @@ const index = (req, res, next) => {
 const store = (req, res, next) => {
     const challenge = req.body.challenge;
 
-    // TODO: Implement custom IDP below
-    if (!(req.body.email === 'foo@bar.com' && req.body.password === 'foobar')) {
-        notice('Log in authentication failed')
-
-        return res.render('login', {
-            csrfToken: req.csrfToken(),
-            challenge: challenge,
-            error: 'The username / password combination is not correct'
-        })
-    }
-
-    info('Log in authentication passed')
-
-    return acceptLoginRequest(challenge, {
-        subject: 'foo@bar.com',
-        remember: Boolean(req.body.remember),
-        remember_for: 3600,
+    axios.post(`${API_GATEWAY_URL}/auth`, {
+        email: req.body.email,
+        password: req.body.password
     })
         .then(response => {
-            info('Log in request accepted')
+            if (response.data.authenticated === true) {
+                info('Log in authentication passed')
 
-            res.redirect(response.redirect_to)
+                return acceptLoginRequest(challenge, {
+                    subject: req.body.email,
+                    remember: Boolean(req.body.remember),
+                    remember_for: 3600,
+                })
+                    .then(response => {
+                        info('Log in request accepted')
+
+                        res.redirect(response.redirect_to)
+                    })
+                    .catch(error => {
+                        err({
+                            message: 'Log in request failed',
+                            error
+                        })
+
+                        next(error)
+                    })
+            }
         })
         .catch(error => {
-            err({
-                message: 'Log in request failed',
-                error
-            })
+            notice('Log in authentication failed')
 
-            next(error)
+            return res.render('login', {
+                csrfToken: req.csrfToken(),
+                challenge: challenge,
+                error: error.response.data.message
+            })
         })
 }
 
