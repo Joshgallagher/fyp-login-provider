@@ -58,12 +58,13 @@ const store = (req, res, next) => {
         password: req.body.password
     })
         .then(response => {
+            console.log(response)
             if (response.data.authenticated === true) {
                 info('Log in authentication passed')
 
                 return acceptLoginRequest(challenge, {
                     subject: req.body.email,
-                    remember: Boolean(req.body.remember),
+                    remember: false,
                     remember_for: 3600,
                 })
                     .then(response => {
@@ -87,7 +88,10 @@ const store = (req, res, next) => {
             return res.render('login', {
                 csrfToken: req.csrfToken(),
                 challenge: challenge,
-                error: error.response.data.message
+                email: req.body.email,
+                password: req.body.password,
+                error: error.response.data.message,
+                field: error.response.data.field
             })
         })
 }
