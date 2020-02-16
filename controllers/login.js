@@ -1,6 +1,6 @@
 const url = require('url')
 
-const { info, err, notice } = require('../system/log')
+const { info, error: err, notice } = require('../system/log')
 const { getLoginRequest, acceptLoginRequest } = require('../lib/hydra')
 
 const index = (req, res, next) => {
