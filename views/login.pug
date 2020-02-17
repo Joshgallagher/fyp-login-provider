@@ -1,23 +1,42 @@
+extends layout
+
 block content
-    h1 Please log in
-    if error
-        p.
-            #{error}
-    form(method="POST")
-        input(type="hidden",name="_csrf",value=csrfToken)
-        input(type="hidden",name="challenge",value=challenge)
-        table(style="")
-            tr
-                td
-                    input(type="email",id="email",name="email",placeholder="email@foobar.com")
-                td.
-                    (it's "foo@bar.com")
-            tr
-                td
-                    input(type="password",id="password",name="password")
-                td.
-                    (it's "foobar")
-        input(type="checkbox",id="remember",name="remember",value="1")
-        label(for="remember") Remember me
-        br
-        input(type="submit",id="accept",value="Log in")
+    section.hero.is-fullheight.is-light
+        .hero-head
+            nav.navbar
+                .container
+                    .navbar-end
+                        a.navbar-item Feed
+                        a.navbar-item Signup
+        .hero-body
+            .container
+                .columns
+                    .column
+                    .column.is-two-fifths
+                        h1.title Welcome back!
+                        h2.subtitle Let's get writing.
+                        unless field
+                            p(style='margin: 0 0 24px 0;').has-text-danger #{error}
+                        form(method="POST")
+                            input(type="hidden",name="_csrf",value=csrfToken)
+                            input(type="hidden",name="challenge",value=challenge)
+                            .field
+                                if field == 'email' && email
+                                    input.input.is-danger(type='email', id='email', name="email", value=email, placeholder='Email')
+                                    p(style='margin: 10px 0 0 0;').has-text-danger #{error}
+                                else if error && email
+                                    input.input.is-danger(type='email', id='email', name="email", value=email, placeholder='Email')
+                                else 
+                                    input.input(type='email', id='email', name="email", placeholder='Email')
+                            .field
+                                if field == 'password' && password
+                                    input.input.is-danger(type='password', id='password', name='password', value=password, placeholder='Password')
+                                    p(style='margin: 10px 0 0 0;').has-text-danger #{error}
+                                else if error && password
+                                    input.input.is-danger(type='password', id='password', name='password', value=password, placeholder='Password')
+                                else 
+                                    input.input(type='password', id='password', name='password', placeholder='Password')
+                            .field
+                                p.control
+                                    input.button.is-primary.is-fullwidth.is-medium(type='submit', id="accept", value='Log in')
+                    .column
