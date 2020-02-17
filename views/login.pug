@@ -24,7 +24,7 @@ block content
                                 if field == 'email' && email
                                     input.input.is-danger(type='email', id='email', name="email", value=email, placeholder='Email')
                                     p(style='margin: 10px 0 0 0;').has-text-danger #{error}
-                                else if error && email
+                                else if error
                                     input.input.is-danger(type='email', id='email', name="email", value=email, placeholder='Email')
                                 else 
                                     input.input(type='email', id='email', name="email", placeholder='Email')
@@ -32,7 +32,7 @@ block content
                                 if field == 'password' && password
                                     input.input.is-danger(type='password', id='password', name='password', value=password, placeholder='Password')
                                     p(style='margin: 10px 0 0 0;').has-text-danger #{error}
-                                else if error && password
+                                else if error
                                     input.input.is-danger(type='password', id='password', name='password', value=password, placeholder='Password')
                                 else 
                                     input.input(type='password', id='password', name='password', placeholder='Password')
