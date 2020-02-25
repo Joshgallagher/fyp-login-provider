@@ -2,6 +2,7 @@ const url = require('url')
 const axios = require('axios');
 
 const API_GATEWAY_URL = process.env.API_GATEWAY_URL
+    || 'http://api-gateway:4949'
 
 const { info, error: err, notice } = require('../system/log')
 const { getLoginRequest, acceptLoginRequest } = require('../lib/hydra')
@@ -58,12 +59,13 @@ const store = (req, res, next) => {
         password: req.body.password
     })
         .then(response => {
-            console.log(response)
-            if (response.data.authenticated === true) {
+            const { data: { id, name } } = response
+
+            if (id && name) {
                 info('Log in authentication passed')
 
                 return acceptLoginRequest(challenge, {
-                    subject: req.body.email,
+                    subject: id,
                     remember: false,
                     remember_for: 3600,
                 })
