@@ -15,27 +15,27 @@ block content
                     .column.is-two-fifths
                         h1.title Welcome back!
                         h2.subtitle Let's get writing.
-                        unless field
+                        if error && !field
                             p(style='margin: 0 0 24px 0;').has-text-danger #{error}
                         form(method="POST")
                             input(type="hidden",name="_csrf",value=csrfToken)
                             input(type="hidden",name="challenge",value=challenge)
                             .field
-                                if field == 'email' && email
+                                if field == 'email'
                                     input.input.is-danger(type='email', id='email', name="email", value=email, placeholder='Email')
                                     p(style='margin: 10px 0 0 0;').has-text-danger #{error}
-                                else if error
+                                else if error && !field
                                     input.input.is-danger(type='email', id='email', name="email", value=email, placeholder='Email')
                                 else 
-                                    input.input(type='email', id='email', name="email", placeholder='Email')
+                                    input.input(type='email', id='email', name="email", value=email, placeholder='Email')
                             .field
-                                if field == 'password' && password
+                                if field == 'password'
                                     input.input.is-danger(type='password', id='password', name='password', value=password, placeholder='Password')
                                     p(style='margin: 10px 0 0 0;').has-text-danger #{error}
-                                else if error
+                                else if error && !field
                                     input.input.is-danger(type='password', id='password', name='password', value=password, placeholder='Password')
                                 else 
-                                    input.input(type='password', id='password', name='password', placeholder='Password')
+                                    input.input(type='password', id='password', name='password', value=password, placeholder='Password')
                             .field
                                 p.control
                                     input.button.is-primary.is-fullwidth.is-medium(type='submit', id="accept", value='Log in')
