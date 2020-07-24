@@ -66,6 +66,7 @@ const store = (req, res, next) => {
 
                 return acceptLoginRequest(challenge, {
                     subject: id,
+                    context: { name },
                     remember: false,
                     remember_for: 3600,
                 })
