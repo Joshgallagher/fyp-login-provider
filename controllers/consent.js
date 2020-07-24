@@ -14,11 +14,7 @@ const index = (req, res, next) => {
             return acceptConsentRequest(challenge, {
                 grant_scope: response.requested_scope,
                 grant_access_token_audience: response.requested_access_token_audience,
-                session: {
-                    id_token: {
-                        // Data for ID token
-                    }
-                },
+                session: { id_token: { name: response.context.name } },
                 remember: true,
                 remember_for: 3600
             })
